@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: sample-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - git:
+      repoURL: https://github.com/tcotav/argocd-demo.git
+      revision: main
+      files:
+      - path: "configs/app-*.yaml"
+  template:
+    metadata:
+      name: '{{ .appName }}-{{ .environment }}'
+      labels:
+        app: '{{ .appName }}'
+        environment: '{{ .environment }}'
+        team: '{{ .team }}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/tcotav/argocd-demo.git
+        targetRevision: main
+        path: .
+        helm:
+          releaseName: '{{ .appName }}-{{ .environment }}'
+          values: |
+            appName: {{ .appName }}
+            environment: {{ .environment }}
+            team: {{ .team }}
+            version: "{{ .version }}"
+            customLabels:
+              {{- range $key, $value := .customLabels }}
+              {{ $key }}: {{ $value }}
+              {{- end }}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ .namespace }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true

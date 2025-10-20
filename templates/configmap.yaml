@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.appName }}-config
+  labels:
+    app: {{ .Values.appName }}
+    environment: {{ .Values.environment }}
+    team: {{ .Values.team }}
+    version: {{ .Values.version }}
+    {{- with .Values.customLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+data:
+  app.name: {{ .Values.appName | quote }}
+  environment: {{ .Values.environment | quote }}
+  team: {{ .Values.team | quote }}
+  message: "Hello from {{ .Values.appName }} in {{ .Values.environment }} environment!"

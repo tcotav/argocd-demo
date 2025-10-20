@@ -1,0 +1,9 @@
+appName: frontend-app
+environment: dev
+team: frontend
+version: "1.0.0"
+namespace: dev
+customLabels:
+  owner: alice
+  costCenter: engineering
+  criticality: low

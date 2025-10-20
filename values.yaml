@@ -1,0 +1,10 @@
+# Default values for sample-app
+appName: sample-app
+environment: dev
+team: platform
+version: "1.0.0"
+
+# Additional custom labels can be added here
+customLabels: {}
+  # owner: john-doe
+  # costCenter: engineering

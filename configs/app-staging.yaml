@@ -1,0 +1,9 @@
+appName: frontend-app
+environment: staging
+team: frontend
+version: "1.2.0"
+namespace: staging
+customLabels:
+  owner: alice
+  costCenter: engineering
+  criticality: medium
