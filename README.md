@@ -220,3 +220,25 @@ kubectl delete namespace dev staging prod qa
 3. **Label Propagation**: Labels from config files are applied to Kubernetes resources
 4. **Dynamic Application Creation**: New applications are created automatically when new config files are added
 5. **Environment-specific Configuration**: Each environment has its own config with different labels and values
+6. **Change Detection**: Uses a checksum annotation to ensure label changes trigger ConfigMap updates
+
+## Troubleshooting
+
+### Labels not updating on the cluster?
+
+The ConfigMap includes a `checksum/labels` annotation that changes whenever any label value changes. This ensures ArgoCD detects the change and updates the resource. If labels still aren't updating:
+
+1. Check if the Application is synced:
+   ```bash
+   kubectl get application frontend-app-dev -n argocd
+   ```
+
+2. Manually sync if needed:
+   ```bash
+   argocd app sync frontend-app-dev
+   ```
+
+3. Check the Application status:
+   ```bash
+   argocd app get frontend-app-dev
+   ```

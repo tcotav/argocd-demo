@@ -10,6 +10,9 @@ metadata:
     {{- with .Values.customLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  annotations:
+    # This checksum ensures the ConfigMap is updated when labels change
+    checksum/labels: {{ printf "%s-%s-%s-%s-%s" .Values.appName .Values.environment .Values.team .Values.version (toJson .Values.customLabels) | sha256sum }}
 data:
   app.name: {{ .Values.appName | quote }}
   environment: {{ .Values.environment | quote }}

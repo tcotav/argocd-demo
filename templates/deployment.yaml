@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-deployment
+  labels:
+    app: {{ .Values.appName }}
+    environment: {{ .Values.environment }}
+    team: {{ .Values.team }}
+    version: {{ .Values.version }}
+    {{- with .Values.customLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    # This checksum ensures the Deployment is updated when labels change
+    checksum/labels: {{ printf "%s-%s-%s-%s-%s" .Values.appName .Values.environment .Values.team .Values.version (toJson .Values.customLabels) | sha256sum }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+      environment: {{ .Values.environment }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+        environment: {{ .Values.environment }}
+        team: {{ .Values.team }}
+        version: {{ .Values.version }}
+        {{- with .Values.customLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        # This checksum ensures pods are recreated when labels change
+        checksum/labels: {{ printf "%s-%s-%s-%s-%s" .Values.appName .Values.environment .Values.team .Values.version (toJson .Values.customLabels) | sha256sum }}
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: APP_NAME
+          value: {{ .Values.appName | quote }}
+        - name: ENVIRONMENT
+          value: {{ .Values.environment | quote }}
+        - name: TEAM
+          value: {{ .Values.team | quote }}

@@ -27,15 +27,21 @@ spec:
         path: .
         helm:
           releaseName: '{{ .appName }}-{{ .environment }}'
-          values: |
-            appName: {{ .appName }}
-            environment: {{ .environment }}
-            team: {{ .team }}
-            version: "{{ .version }}"
-            customLabels:
-              {{- range $key, $value := .customLabels }}
-              {{ $key }}: {{ $value }}
-              {{- end }}
+          valueFiles:
+          - values.yaml
+          parameters:
+          - name: appName
+            value: '{{ .appName }}'
+          - name: environment
+            value: '{{ .environment }}'
+          - name: team
+            value: '{{ .team }}'
+          - name: version
+            value: '{{ .version }}'
+          {{- range $key, $value := .customLabels }}
+          - name: customLabels.{{ $key }}
+            value: '{{ $value }}'
+          {{- end }}
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{ .namespace }}'
