@@ -8,7 +8,7 @@ metadata:
     team: {{ .Values.team }}
     version: {{ .Values.version }}
     {{- with .Values.customLabels }}
-    {{- toYaml . | nindent 4 }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
   annotations:
     # This checksum ensures the Deployment is updated when labels change
@@ -27,7 +27,7 @@ spec:
         team: {{ .Values.team }}
         version: {{ .Values.version }}
         {{- with .Values.customLabels }}
-        {{- toYaml . | nindent 8 }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
       annotations:
         # This checksum ensures pods are recreated when labels change
